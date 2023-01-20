@@ -12,7 +12,7 @@
         tools:context=".ui.activity.ProductFormActivity">
 
         <EditText
-            android:id="@+id/name"
+            android:id="@+id/activity_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -23,29 +23,29 @@
             android:inputType="text"/>
 
         <EditText
-            android:id="@+id/description"
+            android:id="@+id/activity_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:hint="Description"
-            app:layout_constraintEnd_toEndOf="@id/name"
-            app:layout_constraintStart_toStartOf="@id/name"
-            app:layout_constraintTop_toBottomOf="@id/name"
+            app:layout_constraintEnd_toEndOf="@id/activity_name"
+            app:layout_constraintStart_toStartOf="@id/activity_name"
+            app:layout_constraintTop_toBottomOf="@id/activity_name"
             android:inputType="text"/>
 
         <EditText
-            android:id="@+id/value"
+            android:id="@+id/activity_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:hint="Value"
-            app:layout_constraintEnd_toEndOf="@id/description"
-            app:layout_constraintStart_toStartOf="@id/description"
-            app:layout_constraintTop_toBottomOf="@id/description"
+            app:layout_constraintEnd_toEndOf="@id/activity_description"
+            app:layout_constraintStart_toStartOf="@id/activity_description"
+            app:layout_constraintTop_toBottomOf="@id/activity_description"
             android:inputType="numberDecimal"/>
 
         <Button
-            android:id="@+id/toSave"
+            android:id="@+id/activity_toSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -54,7 +54,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/value" />
+            app:layout_constraintTop_toBottomOf="@+id/product_value" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

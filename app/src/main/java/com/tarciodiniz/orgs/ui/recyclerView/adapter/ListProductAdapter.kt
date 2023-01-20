@@ -9,17 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.model.Produto
 
-class ListProductAdapter (
+class ListProductAdapter(
     private val context: Context,
-    private val product: List<Produto>
-        ): RecyclerView.Adapter<ListProductAdapter.ViewHolder>() {
+    product: List<Produto>
+) : RecyclerView.Adapter<ListProductAdapter.ViewHolder>() {
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    private val dataProduct = product.toMutableList()
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(produto: Produto) {
 
-            val name = itemView.findViewById<TextView>(R.id.name)
-            val description = itemView.findViewById<TextView>(R.id.description)
-            val value = itemView.findViewById<TextView>(R.id.value)
+            val name = itemView.findViewById<TextView>(R.id.product_name)
+            val description = itemView.findViewById<TextView>(R.id.product_description)
+            val value = itemView.findViewById<TextView>(R.id.product_value)
 
             name.text = produto.name
             description.text = produto.description
@@ -35,10 +37,15 @@ class ListProductAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val produto = product[position]
+        val produto = dataProduct[position]
         holder.bind(produto)
     }
 
-    override fun getItemCount(): Int = product.size
+    override fun getItemCount(): Int = dataProduct.size
+    fun update(products: List<Produto>) {
+        this.dataProduct.clear()
+        this.dataProduct.addAll(products)
+        notifyDataSetChanged()
+    }
 
 }
