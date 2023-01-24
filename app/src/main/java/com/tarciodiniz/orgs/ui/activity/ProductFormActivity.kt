@@ -41,9 +41,7 @@ class ProductFormActivity : AppCompatActivity(R.layout.activity_product_form) {
         }
 
         return Produto(
-            name = name,
-            description = description,
-            value = value
+            name = name, description = description, value = value
         )
     }
 }

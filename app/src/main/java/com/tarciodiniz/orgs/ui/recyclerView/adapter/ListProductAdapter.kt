@@ -2,21 +2,20 @@ package com.tarciodiniz.orgs.ui.recyclerView.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tarciodiniz.orgs.R
+import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.model.Produto
 
 class ListProductAdapter(
-    private val context: Context,
-    product: List<Produto>
+    private val context: Context, product: List<Produto>
 ) : RecyclerView.Adapter<ListProductAdapter.ViewHolder>() {
 
     private val dataProduct = product.toMutableList()
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(binding: ProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(produto: Produto) {
 
             val name = itemView.findViewById<TextView>(R.id.product_name)
@@ -30,10 +29,14 @@ class ListProductAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.product, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(
+        parent: ViewGroup, viewType: Int
+    ): ViewHolder {
+        val binding = ProductBinding.inflate(
+            LayoutInflater.from(context), parent, false
+        )
+        return ViewHolder(binding)
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

@@ -3,25 +3,32 @@ package com.tarciodiniz.orgs.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.dao.ProductsDao
+import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
 
 
 class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) {
 
     private val dao = ProductsDao()
-
     private val adapter = ListProductAdapter(
         context = this, product = dao.getProduct()
     )
 
+    private val binding by lazy {
+        ActivityListProductsBinding.inflate(layoutInflater)
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(binding.root)
         configureRecyclerView()
         configureFab()
+
+
     }
 
     override fun onResume() {
@@ -43,7 +50,7 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
 
     private fun configureRecyclerView() {
         // working with recyclerView
-        val recyclerView = findViewById<RecyclerView>(R.id.activity_list_recyclerView)
+        val recyclerView = binding.activityListRecyclerView
         recyclerView.adapter = adapter
     }
 
