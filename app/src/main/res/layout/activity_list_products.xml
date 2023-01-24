@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/product" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/activity_list_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,8 +25,10 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_add_24"
-        android:contentDescription="@string/app_name" />
+        app:icon="@drawable/ic_baseline_add_24"
+        android:text="new product"
+        android:contentDescription="@string/app_name"
+        tools:ignore="HardcodedText" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
