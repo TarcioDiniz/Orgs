@@ -2,6 +2,7 @@ package com.tarciodiniz.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -9,6 +10,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.dao.ProductsDao
 import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
+import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
 
 
@@ -37,7 +39,7 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
     }
 
     private fun configureFab() {
-        val fab = findViewById<ExtendedFloatingActionButton>(R.id.activity_list_fab)
+        val fab = binding.activityListFab
         fab.setOnClickListener {
             goToProductForm()
         }
