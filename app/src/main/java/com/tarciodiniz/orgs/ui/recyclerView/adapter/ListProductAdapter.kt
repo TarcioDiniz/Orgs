@@ -2,11 +2,14 @@ package com.tarciodiniz.orgs.ui.recyclerView.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.databinding.ProductBinding
+import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Produto
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -18,17 +21,25 @@ class ListProductAdapter(
 
     private val dataProduct = product.toMutableList()
 
-    class ViewHolder(binding: ProductBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private val binding: ProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(produto: Produto) {
 
-            val name = itemView.findViewById<TextView>(R.id.product_name)
-            val description = itemView.findViewById<TextView>(R.id.product_description)
-            val value = itemView.findViewById<TextView>(R.id.product_value)
+            val name = binding.productName
+            val description = binding.productDescription
+            val value = binding.productValue
 
             name.text = produto.name
             description.text = produto.description
             val currencyValue: String = formatForCurrency(produto.value)
             value.text = currencyValue
+
+            binding.imageView.visibility = if(produto.image != null){
+                View.VISIBLE
+            }else{
+                View.GONE
+            }
+
+            binding.imageView.tryToLoad(produto.image)
 
         }
 

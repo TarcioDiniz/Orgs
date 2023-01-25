@@ -2,6 +2,7 @@ package com.tarciodiniz.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -28,8 +29,6 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         setContentView(binding.root)
         configureRecyclerView()
         configureFab()
-
-
     }
 
     override fun onResume() {

@@ -1,23 +1,39 @@
 package com.tarciodiniz.orgs.ui.activity
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.dao.ProductsDao
+import com.tarciodiniz.orgs.databinding.ActivityProductFormBinding
+import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Produto
+import com.tarciodiniz.orgs.ui.dialog.FormImageDialog
 import java.math.BigDecimal
 
-class ProductFormActivity : AppCompatActivity(R.layout.activity_product_form) {
+class ProductFormActivity : AppCompatActivity() {
+
+    private val binding by lazy {
+        ActivityProductFormBinding.inflate(layoutInflater)
+    }
+
+    private var url: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        title = "Register Product"
         configureButtonToSave()
+        binding.activityImagem.setOnClickListener {
+            FormImageDialog(this).showDialog(url) { image ->
+                url = image
+                binding.activityImagem.tryToLoad(url)
+            }
+        }
+
     }
 
     private fun configureButtonToSave() {
         val dao = ProductsDao()
-        val fieldButton = findViewById<Button>(R.id.activity_toSave)
+        val fieldButton = binding.activityToSave
         fieldButton.setOnClickListener {
             val newProduct = createProduct()
             dao.setProduct(newProduct)
@@ -26,9 +42,9 @@ class ProductFormActivity : AppCompatActivity(R.layout.activity_product_form) {
     }
 
     private fun createProduct(): Produto {
-        val fieldName = findViewById<EditText>(R.id.activity_name)
-        val fieldDescription = findViewById<EditText>(R.id.activity_description)
-        val fieldValue = findViewById<EditText>(R.id.activity_value)
+        val fieldName = binding.activityName
+        val fieldDescription = binding.activityDescription
+        val fieldValue = binding.activityValue
 
         val name = fieldName.text.toString()
         val description = fieldDescription.text.toString()
@@ -41,7 +57,7 @@ class ProductFormActivity : AppCompatActivity(R.layout.activity_product_form) {
         }
 
         return Produto(
-            name = name, description = description, value = value
+            name = name, description = description, value = value, image = url
         )
     }
 }
