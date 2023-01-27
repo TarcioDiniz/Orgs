@@ -1,7 +1,5 @@
 ![Thumbnail GitHub](https://user-images.githubusercontent.com/8989346/123294187-ff901300-d4ea-11eb-963c-ac1561afac6f.png)
 
-![](https://img.shields.io/github/license/alura-cursos/android-com-kotlin-personalizando-ui)
-
 # Orgs
 
 App de simulação de um e-commerce para produtos naturais para o curso de personalização de UI no Android com Kotlin.
