@@ -2,10 +2,10 @@ package com.tarciodiniz.orgs.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.tarciodiniz.orgs.dao.ProductsDao
+import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityProductFormBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
-import com.tarciodiniz.orgs.model.Produto
+import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.dialog.FormImageDialog
 import java.math.BigDecimal
 
@@ -32,16 +32,17 @@ class ProductFormActivity : AppCompatActivity() {
     }
 
     private fun configureButtonToSave() {
-        val dao = ProductsDao()
+        val db = AppDatabase.getInstance(this)
+        val productDao = db.productDao()
         val fieldButton = binding.activityToSave
         fieldButton.setOnClickListener {
             val newProduct = createProduct()
-            dao.setProduct(newProduct)
+            productDao.save(newProduct)
             finish()
         }
     }
 
-    private fun createProduct(): Produto {
+    private fun createProduct(): Product {
         val fieldName = binding.activityName
         val fieldDescription = binding.activityDescription
         val fieldValue = binding.activityValue
@@ -56,7 +57,7 @@ class ProductFormActivity : AppCompatActivity() {
             BigDecimal(valueText)
         }
 
-        return Produto(
+        return Product(
             name = name, description = description, value = value, image = url
         )
     }

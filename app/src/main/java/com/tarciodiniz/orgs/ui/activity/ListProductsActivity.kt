@@ -2,23 +2,17 @@ package com.tarciodiniz.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tarciodiniz.orgs.R
-import com.tarciodiniz.orgs.dao.ProductsDao
+import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
-import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
 
 
 class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) {
 
-    private val dao = ProductsDao()
     private val adapter = ListProductAdapter(
-        context = this, product = dao.getProduct()
+        context = this
     )
 
     private val binding by lazy {
@@ -32,15 +26,16 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         configureRecyclerView()
         configureFab()
         binding.activityListSwipeRefresh.setOnRefreshListener {
-             onResume()
-
+            onResume()
         }
 
     }
 
     override fun onResume() {
         super.onResume()
-        adapter.update(dao.getProduct())
+        val db = AppDatabase.getInstance(this)
+        val productDao = db.productDao()
+        adapter.update(productDao.getAll())
         binding.activityListSwipeRefresh.isRefreshing = false
     }
 

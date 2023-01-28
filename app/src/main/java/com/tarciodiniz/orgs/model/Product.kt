@@ -1,10 +1,13 @@
 package com.tarciodiniz.orgs.model
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.math.BigDecimal
 
 @Entity
-data class Produto(
+data class Product(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0L,
     val name: String,
     val description: String,
     val value: BigDecimal,

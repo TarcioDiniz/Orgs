@@ -9,14 +9,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
-import com.tarciodiniz.orgs.model.Produto
+import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.activity.ProductView
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 
 class ListProductAdapter(
-    private val context: Context, product: List<Produto>
+    private val context: Context, product: List<Product> = emptyList()
 ) : RecyclerView.Adapter<ListProductAdapter.ViewHolder>() {
 
     private val dataProduct = product.toMutableList()
@@ -28,7 +28,7 @@ class ListProductAdapter(
 
         init {
             itemView.setOnClickListener{
-                val product = Produto(
+                val product = Product(
                     name = binding.productName.text.toString(),
                     description = binding.productDescription.text.toString(),
                     value = removeCurrencyFormat(binding.productValue.text.toString()),
@@ -41,24 +41,24 @@ class ListProductAdapter(
             }
         }
 
-        fun bind(produto: Produto) {
+        fun bind(product: Product) {
             val name = binding.productName
             val description = binding.productDescription
             val value = binding.productValue
 
-            name.text = produto.name
-            description.text = produto.description
-            val currencyValue: String = formatForCurrency(produto.value)
+            name.text = product.name
+            description.text = product.description
+            val currencyValue: String = formatForCurrency(product.value)
             value.text = currencyValue
 
-            binding.imageView.visibility = if(produto.image != null){
+            binding.imageView.visibility = if(product.image != null){
                 View.VISIBLE
             }else{
                 View.GONE
             }
 
-            binding.imageView.tryToLoad(produto.image)
-            imageBitmap = produto.image
+            binding.imageView.tryToLoad(product.image)
+            imageBitmap = product.image
 
         }
 
@@ -91,7 +91,7 @@ class ListProductAdapter(
 
     override fun getItemCount(): Int = dataProduct.size
     @SuppressLint("NotifyDataSetChanged")
-    fun update(products: List<Produto>) {
+    fun update(products: List<Product>) {
         this.dataProduct.clear()
         this.dataProduct.addAll(products)
         notifyDataSetChanged()

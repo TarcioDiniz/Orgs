@@ -1,15 +1,10 @@
 package com.tarciodiniz.orgs.ui.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.databinding.ActivityProductViewBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
-import com.tarciodiniz.orgs.model.Produto
+import com.tarciodiniz.orgs.model.Product
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
@@ -23,7 +18,7 @@ class ProductView : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val actionBar = supportActionBar
         actionBar!!.hide()
-        val product = intent.getSerializableExtra("product") as Produto
+        val product = intent.getSerializableExtra("product") as Product
 
         val name = binding.productNameView
         val description = binding.productDescriptionView
