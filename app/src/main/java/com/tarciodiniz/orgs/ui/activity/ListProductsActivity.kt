@@ -31,11 +31,17 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         setContentView(binding.root)
         configureRecyclerView()
         configureFab()
+        binding.activityListSwipeRefresh.setOnRefreshListener {
+             onResume()
+
+        }
+
     }
 
     override fun onResume() {
         super.onResume()
         adapter.update(dao.getProduct())
+        binding.activityListSwipeRefresh.isRefreshing = false
     }
 
     private fun configureFab() {
