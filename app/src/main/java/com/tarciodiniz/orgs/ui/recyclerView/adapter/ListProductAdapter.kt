@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.tarciodiniz.orgs.R
+import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
@@ -45,6 +46,8 @@ class ListProductAdapter(
             itemView.setOnLongClickListener{
                 val popupMenu = PopupMenu(itemView.context, it)
                 popupMenu.menuInflater.inflate(R.menu.popup_layout, popupMenu.menu)
+                val db = AppDatabase.getInstance(itemView.context)
+                val productDao = db.productDao()
                 popupMenu.setOnMenuItemClickListener { item ->
                     when (item.itemId){
                         R.id.menu_edit ->{
@@ -52,7 +55,8 @@ class ListProductAdapter(
                             true
                         }
                         R.id.menu_delete -> {
-                            // Adicione o código desejado aqui para a ação 2
+
+
                             true
                         }
                         else -> false

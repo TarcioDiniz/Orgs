@@ -1,10 +1,12 @@
 package com.tarciodiniz.orgs.ui.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.tarciodiniz.orgs.R
+import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityProductViewBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
@@ -13,6 +15,7 @@ import java.text.NumberFormat
 import java.util.*
 
 class ProductView : AppCompatActivity() {
+    private lateinit var product: Product
     private val binding by lazy {
         ActivityProductViewBinding.inflate(layoutInflater)
     }
@@ -23,11 +26,24 @@ class ProductView : AppCompatActivity() {
 //        disable active appbar
 //        val actionBar = supportActionBar
 //        actionBar!!.hide()
-        val product = intent.getSerializableExtra("product") as Product
+        tryToLoadProduct()
 
+    }
+
+    private fun tryToLoadProduct() {
+        val productLoad = intent.getSerializableExtra("product") as Product
+        product = productLoad
+        fillInFields(productLoad)
+
+    }
+
+    private fun fillInFields(product: Product) {
         val name = binding.productNameView
         val description = binding.productDescriptionView
         val value = binding.productButtonView
+
+        Log.i("binding fill", name.toString())
+
 
         name.text = product.name
         description.text = product.description
@@ -38,7 +54,6 @@ class ProductView : AppCompatActivity() {
         }
 
         setContentView(binding.root)
-
     }
 
 
@@ -48,14 +63,20 @@ class ProductView : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.remove_product_details_menu -> {
+        if (::product.isInitialized){
+            val db = AppDatabase.getInstance(this)
+            val productDao = db.productDao()
+            when (item.itemId) {
+                R.id.remove_product_details_menu -> {
+                    productDao.delete(product)
+                    finish()
+                }
+                R.id.edit_product_details_menu -> {
 
-            }
-            R.id.edit_product_details_menu -> {
-
+                }
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
