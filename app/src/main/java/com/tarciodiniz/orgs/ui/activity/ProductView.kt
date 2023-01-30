@@ -1,7 +1,10 @@
 package com.tarciodiniz.orgs.ui.activity
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.databinding.ActivityProductViewBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
@@ -16,8 +19,10 @@ class ProductView : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val actionBar = supportActionBar
-        actionBar!!.hide()
+
+//        disable active appbar
+//        val actionBar = supportActionBar
+//        actionBar!!.hide()
         val product = intent.getSerializableExtra("product") as Product
 
         val name = binding.productNameView
@@ -28,12 +33,30 @@ class ProductView : AppCompatActivity() {
         description.text = product.description
         value.text = formatForCurrency(product.value)
 
-        if (product.image != null){
+        if (product.image != null) {
             binding.productImageView.tryToLoad(product.image)
         }
 
         setContentView(binding.root)
 
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.product_details_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.remove_product_details_menu -> {
+
+            }
+            R.id.edit_product_details_menu -> {
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun formatForCurrency(value: BigDecimal): String {

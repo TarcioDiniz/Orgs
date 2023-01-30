@@ -6,7 +6,9 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
@@ -27,7 +29,7 @@ class ListProductAdapter(
         private var imageBitmap: String? = null
 
         init {
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 val product = Product(
                     name = binding.productName.text.toString(),
                     description = binding.productDescription.text.toString(),
@@ -39,7 +41,28 @@ class ListProductAdapter(
                 intent.putExtra("product", product as java.io.Serializable)
                 itemView.context.startActivity(intent)
             }
+
+            itemView.setOnLongClickListener{
+                val popupMenu = PopupMenu(itemView.context, it)
+                popupMenu.menuInflater.inflate(R.menu.popup_layout, popupMenu.menu)
+                popupMenu.setOnMenuItemClickListener { item ->
+                    when (item.itemId){
+                        R.id.menu_edit ->{
+                            // Adicione o código desejado aqui para a ação 1
+                            true
+                        }
+                        R.id.menu_delete -> {
+                            // Adicione o código desejado aqui para a ação 2
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popupMenu.show()
+                true
+            }
         }
+
 
         fun bind(product: Product) {
             val name = binding.productName
@@ -51,9 +74,9 @@ class ListProductAdapter(
             val currencyValue: String = formatForCurrency(product.value)
             value.text = currencyValue
 
-            binding.imageView.visibility = if(product.image != null){
+            binding.imageView.visibility = if (product.image != null) {
                 View.VISIBLE
-            }else{
+            } else {
                 View.GONE
             }
 
@@ -90,6 +113,7 @@ class ListProductAdapter(
     }
 
     override fun getItemCount(): Int = dataProduct.size
+
     @SuppressLint("NotifyDataSetChanged")
     fun update(products: List<Product>) {
         this.dataProduct.clear()
