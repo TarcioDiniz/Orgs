@@ -16,6 +16,7 @@ class ProductFormActivity : AppCompatActivity() {
     }
 
     private var url: String? = null
+    private var idProduct = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +28,19 @@ class ProductFormActivity : AppCompatActivity() {
                 url = image
                 binding.activityImagem.tryToLoad(url)
             }
+        }
+
+        intent.getParcelableExtra<Product>("product")?.let { productLoad ->
+            idProduct = productLoad.id
+            title = "Change Product"
+            binding.activityImagem
+                .tryToLoad(productLoad.image)
+            binding.activityName
+                .setText(productLoad.name)
+            binding.activityDescription
+                .setText(productLoad.description)
+            binding.activityValue
+                .setText(productLoad.value.toPlainString())
         }
 
     }

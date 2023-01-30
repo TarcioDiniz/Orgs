@@ -1,5 +1,6 @@
 package com.tarciodiniz.orgs.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -31,9 +32,11 @@ class ProductView : AppCompatActivity() {
     }
 
     private fun tryToLoadProduct() {
-        val productLoad = intent.getSerializableExtra("product") as Product
-        product = productLoad
-        fillInFields(productLoad)
+        val productLoad = intent.getParcelableExtra<Product>("product")
+        if (productLoad != null) {
+            product = productLoad
+        }
+        productLoad?.let { fillInFields(it) }
 
     }
 
@@ -68,14 +71,14 @@ class ProductView : AppCompatActivity() {
             val productDao = db.productDao()
             when (item.itemId) {
                 R.id.remove_product_details_menu -> {
-
-                    Log.i("delete", product.toString())
-                    Log.i("delete", productDao.getAll().toString())
                     productDao.delete(product)
                     finish()
                 }
                 R.id.edit_product_details_menu -> {
-
+                    Intent(this, ProductFormActivity::class.java).apply {
+                        putExtra("product", product)
+                        startActivity(this)
+                    }
                 }
             }
         }

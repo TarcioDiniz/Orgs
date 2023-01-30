@@ -37,7 +37,7 @@ class ListProductAdapter(
                 val product = dataProduct.toMutableList()[position]
 
                 val intent = Intent(itemView.context, ProductView::class.java)
-                intent.putExtra("product", product as java.io.Serializable)
+                intent.putExtra("product", product)
                 itemView.context.startActivity(intent)
             }
 
