@@ -63,11 +63,14 @@ class ProductView : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (::product.isInitialized){
+        if (::product.isInitialized) {
             val db = AppDatabase.getInstance(this)
             val productDao = db.productDao()
             when (item.itemId) {
                 R.id.remove_product_details_menu -> {
+
+                    Log.i("delete", product.toString())
+                    Log.i("delete", productDao.getAll().toString())
                     productDao.delete(product)
                     finish()
                 }

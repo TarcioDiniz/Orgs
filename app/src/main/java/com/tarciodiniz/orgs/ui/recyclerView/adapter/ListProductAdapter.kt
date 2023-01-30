@@ -3,6 +3,7 @@ package com.tarciodiniz.orgs.ui.recyclerView.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,19 +25,16 @@ class ListProductAdapter(
 
     private val dataProduct = product.toMutableList()
 
-    class ViewHolder(private val binding: ProductBinding) :
+    class ViewHolder(private val binding: ProductBinding, private val dataProduct: List<Product>) :
         RecyclerView.ViewHolder(binding.root) {
 
         private var imageBitmap: String? = null
 
         init {
             itemView.setOnClickListener {
-                val product = Product(
-                    name = binding.productName.text.toString(),
-                    description = binding.productDescription.text.toString(),
-                    value = removeCurrencyFormat(binding.productValue.text.toString()),
-                    image = imageBitmap
-                )
+
+                val position = bindingAdapterPosition
+                val product = dataProduct.toMutableList()[position]
 
                 val intent = Intent(itemView.context, ProductView::class.java)
                 intent.putExtra("product", product as java.io.Serializable)
@@ -107,7 +105,7 @@ class ListProductAdapter(
         val binding = ProductBinding.inflate(
             LayoutInflater.from(context), parent, false
         )
-        return ViewHolder(binding)
+        return ViewHolder(binding, dataProduct)
 
     }
 
