@@ -16,9 +16,13 @@ import java.text.NumberFormat
 import java.util.*
 
 class ProductView : AppCompatActivity() {
-    private lateinit var product: Product
+    private var productId: Long? = null
+    private var product: Product? = null
     private val binding by lazy {
         ActivityProductViewBinding.inflate(layoutInflater)
+    }
+    private val productDao by lazy {
+        AppDatabase.getInstance(this).productDao()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,12 +35,22 @@ class ProductView : AppCompatActivity() {
 
     }
 
-    private fun tryToLoadProduct() {
-        val productLoad = intent.getParcelableExtra<Product>("product")
-        if (productLoad != null) {
-            product = productLoad
+    override fun onResume() {
+        super.onResume()
+        productId?.let { id ->
+            product = productDao.getFromID(id)
         }
-        productLoad?.let { fillInFields(it) }
+        product?.let {
+            fillInFields(it)
+        }?: finish()
+
+    }
+
+    private fun tryToLoadProduct() {
+        intent.getParcelableExtra<Product>("product")?.let { productLoad ->
+            productId = productLoad.id
+        }
+
 
     }
 
@@ -66,12 +80,10 @@ class ProductView : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (::product.isInitialized) {
-            val db = AppDatabase.getInstance(this)
-            val productDao = db.productDao()
+
             when (item.itemId) {
                 R.id.remove_product_details_menu -> {
-                    productDao.delete(product)
+                    product?.let { productDao.delete(it) }
                     finish()
                 }
                 R.id.edit_product_details_menu -> {
@@ -81,7 +93,6 @@ class ProductView : AppCompatActivity() {
                     }
                 }
             }
-        }
 
         return super.onOptionsItemSelected(item)
     }

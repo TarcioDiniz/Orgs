@@ -1,7 +1,9 @@
 package com.tarciodiniz.orgs.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ContextMenu
 import android.view.MenuInflater
 import android.view.View
@@ -33,6 +35,11 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         }
 
     }
+
+    fun refreshList() {
+        onResume()
+    }
+
 
     override fun onResume() {
         super.onResume()

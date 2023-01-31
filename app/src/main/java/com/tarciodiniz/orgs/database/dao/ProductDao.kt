@@ -1,9 +1,6 @@
 package com.tarciodiniz.orgs.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.tarciodiniz.orgs.model.Product
 
 @Dao
@@ -17,4 +14,9 @@ interface ProductDao {
     @Delete
     fun delete(product: Product)
 
+    @Update
+    fun update(product: Product)
+
+    @Query("SELECT * FROM Product WHERE id = :id")
+    fun getFromID(id: Long): Product?
 }

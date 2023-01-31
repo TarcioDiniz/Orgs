@@ -1,6 +1,7 @@
 package com.tarciodiniz.orgs.ui.recyclerView.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -8,13 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.database.AppDatabase
+import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
 import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.ui.activity.ListProductsActivity
+import com.tarciodiniz.orgs.ui.activity.ProductFormActivity
 import com.tarciodiniz.orgs.ui.activity.ProductView
+import okhttp3.internal.notify
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
@@ -30,6 +36,7 @@ class ListProductAdapter(
 
         private var imageBitmap: String? = null
 
+
         init {
             itemView.setOnClickListener {
 
@@ -44,17 +51,24 @@ class ListProductAdapter(
             itemView.setOnLongClickListener{
                 val popupMenu = PopupMenu(itemView.context, it)
                 popupMenu.menuInflater.inflate(R.menu.popup_layout, popupMenu.menu)
+
+                val position = bindingAdapterPosition
+                val product = dataProduct.toMutableList()[position]
+
                 val db = AppDatabase.getInstance(itemView.context)
                 val productDao = db.productDao()
                 popupMenu.setOnMenuItemClickListener { item ->
                     when (item.itemId){
                         R.id.menu_edit ->{
-                            // Adicione o código desejado aqui para a ação 1
+                            Intent(itemView.context, ProductFormActivity::class.java).apply {
+                                putExtra("product", product)
+                                itemView.context.startActivity(this)
+                            }
                             true
                         }
                         R.id.menu_delete -> {
-
-
+                            productDao.delete(product)
+                            (itemView.context as ListProductsActivity).refreshList()
                             true
                         }
                         else -> false

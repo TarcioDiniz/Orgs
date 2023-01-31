@@ -33,6 +33,7 @@ class ProductFormActivity : AppCompatActivity() {
         intent.getParcelableExtra<Product>("product")?.let { productLoad ->
             idProduct = productLoad.id
             title = "Change Product"
+            url = productLoad.image
             binding.activityImagem
                 .tryToLoad(productLoad.image)
             binding.activityName
@@ -51,7 +52,11 @@ class ProductFormActivity : AppCompatActivity() {
         val fieldButton = binding.activityToSave
         fieldButton.setOnClickListener {
             val newProduct = createProduct()
-            productDao.save(newProduct)
+            if (idProduct > 0L) {
+                productDao.update(newProduct)
+            } else {
+                productDao.save(newProduct)
+            }
             finish()
         }
     }
@@ -72,7 +77,7 @@ class ProductFormActivity : AppCompatActivity() {
         }
 
         return Product(
-            name = name, description = description, value = value, image = url
+            id = idProduct, name = name, description = description, value = value, image = url
         )
     }
 }
