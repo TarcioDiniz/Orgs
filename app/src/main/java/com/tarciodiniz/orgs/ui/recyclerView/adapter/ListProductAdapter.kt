@@ -1,26 +1,21 @@
 package com.tarciodiniz.orgs.ui.recyclerView.adapter
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.database.AppDatabase
-import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
 import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.activity.ListProductsActivity
 import com.tarciodiniz.orgs.ui.activity.ProductFormActivity
 import com.tarciodiniz.orgs.ui.activity.ProductView
-import okhttp3.internal.notify
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
