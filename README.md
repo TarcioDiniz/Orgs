@@ -29,7 +29,7 @@ As técnicas e tecnologias utilizadas pra isso são:
 
 Tela de detalhes do produto
 
-![orgs-desafio-detalhes](https://user-images.githubusercontent.com/8989346/124600562-3a743e00-de3d-11eb-9d45-15e8a8d2976f.gif)
+![orgs-desafio-detalhes](https://github.com/TarcioDiniz/Orgs/blob/context/img/img6_01.gif.gif)
 
 ## 📚 Mais informações do curso
 
