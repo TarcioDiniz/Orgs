@@ -29,8 +29,6 @@ Menu de popup ao clicar e pressionar um item da lista de produtos.
 
 ![demonstração desafio popup](https://user-images.githubusercontent.com/8989346/143617874-c55ec2fb-fe56-4f0c-866c-af9bd3a1827b.gif)
 
-[Resultado do desafio](https://github.com/alura-cursos/android-com-kotlin-persistencia-de-dados-com-room/commit/ff307fcaf25089689e944d5e79f4f8c3f15f8cc3).
-
 ### Ordenação de produtos
 
 Menus de opções para ordenar produtos por nome, descrição ou valor. 
