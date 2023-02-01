@@ -37,8 +37,6 @@ Menus de opções para ordenar produtos por nome, descrição ou valor.
 
 ![demonstração do desafio de ordenação de produtos](https://user-images.githubusercontent.com/8989346/137913949-2bed58cc-c9c5-4444-a4a3-6e1fcf94938d.gif)
 
-[Resultado do desafio](https://github.com/alura-cursos/android-com-kotlin-persistencia-de-dados-com-room/commit/58fa63e2bb004d9144a0727a2dadd9265f0182ba).
-
 ## ✔️ Técnicas e tecnologias utilizadas
 
 - `Jetpack Room`: lib para persistência de dados em banco de dados interno com SQLite
