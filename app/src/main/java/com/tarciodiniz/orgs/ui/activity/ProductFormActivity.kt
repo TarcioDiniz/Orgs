@@ -2,12 +2,13 @@ package com.tarciodiniz.orgs.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityProductFormBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.dialog.FormImageDialog
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 class ProductFormActivity : AppCompatActivity() {
@@ -22,8 +23,6 @@ class ProductFormActivity : AppCompatActivity() {
     private val productDao by lazy {
         AppDatabase.getInstance(this).productDao()
     }
-
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +40,12 @@ class ProductFormActivity : AppCompatActivity() {
 
     private fun tryToLookForProduct() {
         intent.getParcelableExtra<Product>("product")?.let { productLoad ->
-            scope.launch {
+            lifecycleScope.launch {
                 productDao.getFromID(productLoad.id)?.let {
                     idProduct = productLoad.id
-                    withContext(Dispatchers.Main) {
-                        title = "Change Product"
-                        fillFields(it)
-                    }
+                    title = "Change Product"
+                    fillFields(it)
+
                 }
             }
         }
@@ -69,19 +67,14 @@ class ProductFormActivity : AppCompatActivity() {
         val fieldButton = binding.activityToSave
         fieldButton.setOnClickListener {
             val newProduct = createProduct()
-
-            val scope = MainScope()
-            scope.launch {
-                withContext(Dispatchers.IO) {
-                    if (idProduct > 0L) {
-                        productDao.update(newProduct)
-                    } else {
-                        productDao.save(newProduct)
-                    }
+            lifecycleScope.launch {
+                if (idProduct > 0L) {
+                    productDao.update(newProduct)
+                } else {
+                    productDao.save(newProduct)
                 }
                 finish()
             }
-
         }
     }
 

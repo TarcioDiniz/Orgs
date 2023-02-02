@@ -6,15 +6,13 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityProductViewBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
@@ -29,8 +27,6 @@ class ProductView : AppCompatActivity() {
         AppDatabase.getInstance(this).productDao()
     }
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,15 +39,13 @@ class ProductView : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        scope.launch {
+        lifecycleScope.launch {
             productId?.let { id ->
                 product = productDao.getFromID(id)
             }
-            withContext(Dispatchers.Main) {
-                product?.let {
-                    fillInFields(it)
-                } ?: finish()
-            }
+            product?.let {
+                fillInFields(it)
+            } ?: finish()
         }
     }
 
@@ -92,7 +86,7 @@ class ProductView : AppCompatActivity() {
 
         when (item.itemId) {
             R.id.remove_product_details_menu -> {
-                scope.launch {
+                lifecycleScope.launch {
                     product?.let { productDao.delete(it) }
                 }
                 finish()

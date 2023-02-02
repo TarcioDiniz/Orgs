@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) {
@@ -27,7 +31,6 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         AppDatabase.getInstance(this).productDao()
     }
 
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +67,7 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        scope.launch {
+        lifecycleScope.launch {
             val productsOrdered: List<Product>? = when (item.itemId) {
                 R.id.filter_menu_asc_name ->
                     productDao.searchAllOrderByNameAsc()
@@ -82,10 +85,8 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
                     productDao.getAll()
                 else -> null
             }
-            withContext(Dispatchers.Main) {
-                productsOrdered?.let {
-                    adapter.update(it)
-                }
+            productsOrdered?.let {
+                adapter.update(it)
             }
         }
         return super.onOptionsItemSelected(item)
