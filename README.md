@@ -46,6 +46,8 @@ Menus de opções para ordenar produtos por nome, descrição ou valor.
 - `Menu de opções`: menu para editar e remover
 - `Extras`: técnica para enviar e receber informações entre Activities
 - `inicialização lateinit e lazy`: técnicas para criar propriedades em Activities que não podem ser inicializadas na construção da Activity
+-  `Coroutines`: técnica  Android usada para simplificar o código que é executado de forma assíncrona.
+
 
 ## 📚 Mais informações do curso
 
