@@ -10,6 +10,7 @@ import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
+import kotlinx.coroutines.*
 
 
 class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) {
@@ -26,6 +27,8 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         AppDatabase.getInstance(this).productDao()
     }
 
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -41,11 +44,18 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         onResume()
     }
 
-
     override fun onResume() {
         super.onResume()
-        adapter.update(productDao.getAll())
-        binding.activityListSwipeRefresh.isRefreshing = false
+        val scope = MainScope()
+        binding.activityListSwipeRefresh.isRefreshing = true
+        scope.launch {
+            val product = withContext(Dispatchers.IO) {
+                productDao.getAll()
+            }
+            adapter.update(product)
+            binding.activityListSwipeRefresh.isRefreshing = false
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -54,25 +64,29 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val productsOrdered: List<Product>? = when (item.itemId){
-            R.id.filter_menu_asc_name ->
-                productDao.searchAllOrderByNameAsc()
-            R.id.filter_menu_name_desc ->
-                productDao.searchAllOrderByNameDesc()
-            R.id.filter_menu_asc_description ->
-                productDao.searchAllOrderByDescriptionAsc()
-            R.id.filter_menu_description_desc ->
-                productDao.searchAllOrderByDescriptionDesc()
-            R.id.filter_menu_asc_value ->
-                productDao.searchAllOrderByAscValue()
-            R.id.filter_menu_discount_value ->
-                productDao.searchAllOrderByValueDesc()
-            R.id.filter_menu_without_ordination ->
-                productDao.getAll()
-            else -> null
-        }
-        productsOrdered?.let {
-            adapter.update(it)
+        scope.launch {
+            val productsOrdered: List<Product>? = when (item.itemId) {
+                R.id.filter_menu_asc_name ->
+                    productDao.searchAllOrderByNameAsc()
+                R.id.filter_menu_name_desc ->
+                    productDao.searchAllOrderByNameDesc()
+                R.id.filter_menu_asc_description ->
+                    productDao.searchAllOrderByDescriptionAsc()
+                R.id.filter_menu_description_desc ->
+                    productDao.searchAllOrderByDescriptionDesc()
+                R.id.filter_menu_asc_value ->
+                    productDao.searchAllOrderByAscValue()
+                R.id.filter_menu_discount_value ->
+                    productDao.searchAllOrderByValueDesc()
+                R.id.filter_menu_without_ordination ->
+                    productDao.getAll()
+                else -> null
+            }
+            withContext(Dispatchers.Main) {
+                productsOrdered?.let {
+                    adapter.update(it)
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }

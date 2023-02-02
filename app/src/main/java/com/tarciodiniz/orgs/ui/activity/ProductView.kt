@@ -11,6 +11,10 @@ import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityProductViewBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
@@ -25,6 +29,8 @@ class ProductView : AppCompatActivity() {
         AppDatabase.getInstance(this).productDao()
     }
 
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,13 +43,16 @@ class ProductView : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        productId?.let { id ->
-            product = productDao.getFromID(id)
+        scope.launch {
+            productId?.let { id ->
+                product = productDao.getFromID(id)
+            }
+            withContext(Dispatchers.Main) {
+                product?.let {
+                    fillInFields(it)
+                } ?: finish()
+            }
         }
-        product?.let {
-            fillInFields(it)
-        }?: finish()
-
     }
 
     private fun tryToLoadProduct() {
@@ -81,18 +90,20 @@ class ProductView : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-            when (item.itemId) {
-                R.id.remove_product_details_menu -> {
+        when (item.itemId) {
+            R.id.remove_product_details_menu -> {
+                scope.launch {
                     product?.let { productDao.delete(it) }
-                    finish()
                 }
-                R.id.edit_product_details_menu -> {
-                    Intent(this, ProductFormActivity::class.java).apply {
-                        putExtra("product", product)
-                        startActivity(this)
-                    }
+                finish()
+            }
+            R.id.edit_product_details_menu -> {
+                Intent(this, ProductFormActivity::class.java).apply {
+                    putExtra("product", product)
+                    startActivity(this)
                 }
             }
+        }
 
         return super.onOptionsItemSelected(item)
     }

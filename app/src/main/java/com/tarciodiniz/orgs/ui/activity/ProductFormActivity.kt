@@ -7,6 +7,7 @@ import com.tarciodiniz.orgs.databinding.ActivityProductFormBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.dialog.FormImageDialog
+import kotlinx.coroutines.*
 import java.math.BigDecimal
 
 class ProductFormActivity : AppCompatActivity() {
@@ -17,6 +18,12 @@ class ProductFormActivity : AppCompatActivity() {
 
     private var url: String? = null
     private var idProduct = 0L
+
+    private val productDao by lazy {
+        AppDatabase.getInstance(this).productDao()
+    }
+
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,35 +36,52 @@ class ProductFormActivity : AppCompatActivity() {
                 binding.activityImagem.tryToLoad(url)
             }
         }
+        tryToLookForProduct()
+    }
 
+    private fun tryToLookForProduct() {
         intent.getParcelableExtra<Product>("product")?.let { productLoad ->
-            idProduct = productLoad.id
-            title = "Change Product"
-            url = productLoad.image
-            binding.activityImagem
-                .tryToLoad(productLoad.image)
-            binding.activityName
-                .setText(productLoad.name)
-            binding.activityDescription
-                .setText(productLoad.description)
-            binding.activityValue
-                .setText(productLoad.value.toPlainString())
+            scope.launch {
+                productDao.getFromID(productLoad.id)?.let {
+                    idProduct = productLoad.id
+                    withContext(Dispatchers.Main) {
+                        title = "Change Product"
+                        fillFields(it)
+                    }
+                }
+            }
         }
+    }
 
+    private fun fillFields(productLoad: Product) {
+        url = productLoad.image
+        binding.activityImagem
+            .tryToLoad(productLoad.image)
+        binding.activityName
+            .setText(productLoad.name)
+        binding.activityDescription
+            .setText(productLoad.description)
+        binding.activityValue
+            .setText(productLoad.value.toPlainString())
     }
 
     private fun configureButtonToSave() {
-        val db = AppDatabase.getInstance(this)
-        val productDao = db.productDao()
         val fieldButton = binding.activityToSave
         fieldButton.setOnClickListener {
             val newProduct = createProduct()
-            if (idProduct > 0L) {
-                productDao.update(newProduct)
-            } else {
-                productDao.save(newProduct)
+
+            val scope = MainScope()
+            scope.launch {
+                withContext(Dispatchers.IO) {
+                    if (idProduct > 0L) {
+                        productDao.update(newProduct)
+                    } else {
+                        productDao.save(newProduct)
+                    }
+                }
+                finish()
             }
-            finish()
+
         }
     }
 

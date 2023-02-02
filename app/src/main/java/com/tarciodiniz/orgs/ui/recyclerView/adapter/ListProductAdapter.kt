@@ -16,6 +16,10 @@ import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.activity.ListProductsActivity
 import com.tarciodiniz.orgs.ui.activity.ProductFormActivity
 import com.tarciodiniz.orgs.ui.activity.ProductView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
@@ -30,6 +34,7 @@ class ListProductAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         private var imageBitmap: String? = null
+        private val scope = CoroutineScope(Dispatchers.IO)
 
 
         init {
@@ -43,7 +48,7 @@ class ListProductAdapter(
                 itemView.context.startActivity(intent)
             }
 
-            itemView.setOnLongClickListener{
+            itemView.setOnLongClickListener {
                 val popupMenu = PopupMenu(itemView.context, it)
                 popupMenu.menuInflater.inflate(R.menu.popup_layout, popupMenu.menu)
 
@@ -53,8 +58,8 @@ class ListProductAdapter(
                 val db = AppDatabase.getInstance(itemView.context)
                 val productDao = db.productDao()
                 popupMenu.setOnMenuItemClickListener { item ->
-                    when (item.itemId){
-                        R.id.menu_edit ->{
+                    when (item.itemId) {
+                        R.id.menu_edit -> {
                             Intent(itemView.context, ProductFormActivity::class.java).apply {
                                 putExtra("product", product)
                                 itemView.context.startActivity(this)
@@ -62,8 +67,12 @@ class ListProductAdapter(
                             true
                         }
                         R.id.menu_delete -> {
-                            productDao.delete(product)
-                            (itemView.context as ListProductsActivity).refreshList()
+                            scope.launch {
+                                productDao.delete(product)
+                                withContext(Dispatchers.Main) {
+                                    (itemView.context as ListProductsActivity).refreshList()
+                                }
+                            }
                             true
                         }
                         else -> false
