@@ -1,36 +1,52 @@
-![Thumbnail GitHub](https://user-images.githubusercontent.com/8989346/123294187-ff901300-d4ea-11eb-963c-ac1561afac6f.png)
-
+![Thumbnail](https://user-images.githubusercontent.com/8989346/132551158-1dcbc5a8-f3e7-4022-80e0-30f16935f7a8.png)
+  
 # Orgs
 
-App de simulação de um e-commerce para produtos naturais para o curso de personalização de UI no Android com Kotlin.
+App de simulação um e-commerce de produtos naturais
 
 ## 🔨 Funcionalidades do projeto
 
-O App lista produtos com imagem, título, descrição e valor. Também, é possível cadastrar produtos. Todo armazenamento é mantido em memória do App, portanto, ao finalizar o App as informações são perdidas.
+O projeto permite cadastrar, alterar e remover produtos com imagem, nome, descrição e valor. Os produtos salvos são apresentados em uma lista e podem ser visualizados ao realizar o clique.
 
-![](img/amostra.gif)
+- Inserindo
+
+![inserindo produto](https://user-images.githubusercontent.com/8989346/133252744-e6201160-1d51-47c2-8192-d602be1bfd80.gif)
+
+
+- Alterando
+
+![alterando produto](https://user-images.githubusercontent.com/8989346/133252749-eecdb640-1a11-422b-99e2-57347b765918.gif)
+
+- Removendo
+
+![removendo produto](https://user-images.githubusercontent.com/8989346/133252742-90509b74-e6df-4a47-bc2f-0208a0977d92.gif)
+
+## 🎯 Desafios
+
+### Menu de popup
+
+Menu de popup ao clicar e pressionar um item da lista de produtos.
+
+![demonstração desafio popup](https://user-images.githubusercontent.com/8989346/143617874-c55ec2fb-fe56-4f0c-866c-af9bd3a1827b.gif)
+
+### Ordenação de produtos
+
+Menus de opções para ordenar produtos por nome, descrição ou valor. 
+
+![demonstração do desafio de ordenação de produtos](https://user-images.githubusercontent.com/8989346/137913949-2bed58cc-c9c5-4444-a4a3-6e1fcf94938d.gif)
 
 ## ✔️ Técnicas e tecnologias utilizadas
 
-As técnicas e tecnologias utilizadas pra isso são:
-
-- `CardView`: container para apresentar cada produto na lista de produtos
-- `RecyclerView`: listagem das produtos
-- `ConstraintLayout`: ViewGroup padrão para implementar todos os layouts
-- `ImageView`: View para apresentar imagens no App
-- `Coil`: carregar imagens via requisição HTTP
-- `View Binding`: busca de views do layout de forma segura
-- `AlertDialog`: Exibição de formulário para carregar novas imagens do produto
-- `Fontes personalizadas`: configuração para adicionar novas fontes
-- `Extension functions`: adicionar comportamentos em outras classes para reutilizá-los
-- `Personalização de tema`: modificação de cores para o tema do App
-
-## 🎯 Desafio
-
-Tela de detalhes do produto
-
-![orgs-desafio-detalhes](https://user-images.githubusercontent.com/8989346/124600562-3a743e00-de3d-11eb-9d45-15e8a8d2976f.gif)
+- `Jetpack Room`: lib para persistência de dados em banco de dados interno com SQLite
+- `Entidade`: definição da tabela que será criada no banco de dados
+- `DAO`: definição dos comportamentos com o banco de dados
+  - **comportamentos definidos**: inserção, alteração, remoção e consultas de todos os registros e com filtro
+- `Database`: configuração para criar a conexão com o banco de dados
+- `conversor de tipo`: converter um tipo complexo para um tipo compatível com o SQLite
+- `Menu de opções`: menu para editar e remover
+- `Extras`: técnica para enviar e receber informações entre Activities
+- `inicialização lateinit e lazy`: técnicas para criar propriedades em Activities que não podem ser inicializadas na construção da Activity
 
 ## 📚 Mais informações do curso
 
-Gostou do projeto e quer conhecer mais? Você pode [acessar o curso](https://cursos.alura.com.br/course/android-kotlin-personalize-app) que desenvolve o projeto desde o começo!
+Gostou do projeto e quer conhecer mais? Você pode [acessar o curso](https://cursos.alura.com.br/course/android-kotlin-persistencia-dados-room) que desenvolve o projeto desde o começo!
