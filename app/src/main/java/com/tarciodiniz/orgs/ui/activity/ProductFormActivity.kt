@@ -8,10 +8,12 @@ import com.tarciodiniz.orgs.databinding.ActivityProductFormBinding
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.dialog.FormImageDialog
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-class ProductFormActivity : AppCompatActivity() {
+class ProductFormActivity : ActivityBaseUser() {
 
     private val binding by lazy {
         ActivityProductFormBinding.inflate(layoutInflater)
@@ -36,6 +38,13 @@ class ProductFormActivity : AppCompatActivity() {
             }
         }
         tryToLookForProduct()
+        lifecycleScope.launch {
+            user
+                .filterNotNull()
+                .collect{
+
+            }
+        }
     }
 
     private fun tryToLookForProduct() {
@@ -45,7 +54,6 @@ class ProductFormActivity : AppCompatActivity() {
                     idProduct = productLoad.id
                     title = "Change Product"
                     fillFields(it)
-
                 }
             }
         }
@@ -66,19 +74,21 @@ class ProductFormActivity : AppCompatActivity() {
     private fun configureButtonToSave() {
         val fieldButton = binding.activityToSave
         fieldButton.setOnClickListener {
-            val newProduct = createProduct()
             lifecycleScope.launch {
-                if (idProduct > 0L) {
-                    productDao.update(newProduct)
-                } else {
-                    productDao.save(newProduct)
+                user.value?.let { user ->
+                    val newProduct = createProduct(user.id)
+                    if (idProduct > 0L) {
+                        productDao.update(newProduct)
+                    } else {
+                        productDao.save(newProduct)
+                    }
+                    finish()
                 }
-                finish()
             }
         }
     }
 
-    private fun createProduct(): Product {
+    private fun createProduct(userID: String): Product {
         val fieldName = binding.activityName
         val fieldDescription = binding.activityDescription
         val fieldValue = binding.activityValue
@@ -94,7 +104,13 @@ class ProductFormActivity : AppCompatActivity() {
         }
 
         return Product(
-            id = idProduct, name = name, description = description, value = value, image = url
+            id = idProduct,
+            name = name,
+            description = description,
+            value = value,
+            image = url,
+            userID = userID
+
         )
     }
 }

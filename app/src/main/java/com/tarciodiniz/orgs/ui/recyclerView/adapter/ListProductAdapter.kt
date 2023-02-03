@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ProductBinding
+import com.tarciodiniz.orgs.extensions.PRODUCT_KEY
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.activity.ListProductsActivity
@@ -23,6 +24,7 @@ import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
+import com.tarciodiniz.orgs.extensions.invokeActivity
 
 class ListProductAdapter(
     private val context: Context, product: List<Product> = emptyList()
@@ -44,7 +46,7 @@ class ListProductAdapter(
                 val product = dataProduct.toMutableList()[position]
 
                 val intent = Intent(itemView.context, ProductView::class.java)
-                intent.putExtra("product", product)
+                intent.putExtra(PRODUCT_KEY, product)
                 itemView.context.startActivity(intent)
             }
 
@@ -61,7 +63,7 @@ class ListProductAdapter(
                     when (item.itemId) {
                         R.id.menu_edit -> {
                             Intent(itemView.context, ProductFormActivity::class.java).apply {
-                                putExtra("product", product)
+                                putExtra(PRODUCT_KEY, product)
                                 itemView.context.startActivity(this)
                             }
                             true

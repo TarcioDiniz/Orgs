@@ -1,23 +1,21 @@
 package com.tarciodiniz.orgs.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
+import com.tarciodiniz.orgs.extensions.invokeActivity
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
-class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) {
+class ListProductsActivity : ActivityBaseUser() {
 
     private val adapter = ListProductAdapter(
         context = this
@@ -31,42 +29,64 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         AppDatabase.getInstance(this).productDao()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         configureRecyclerView()
         configureFab()
         binding.activityListSwipeRefresh.setOnRefreshListener {
-            onResume()
+            refreshList()
         }
-
-    }
-
-    fun refreshList() {
-        onResume()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val scope = MainScope()
-        binding.activityListSwipeRefresh.isRefreshing = true
-        scope.launch {
-            val product = withContext(Dispatchers.IO) {
-                productDao.getAll()
+        lifecycleScope.launch {
+            launch {
+                user
+                    .filterNotNull()
+                    .collect {user ->
+                        searchForUserProducts(user.id)
+                    }
             }
-            adapter.update(product)
-            binding.activityListSwipeRefresh.isRefreshing = false
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.filter_menu, menu)
+        menuInflater.inflate(R.menu.menu_logout, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        configureLogoutButton(item)
+        configureFilterButton(item)
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun refreshList() {
+        binding.activityListSwipeRefresh.isRefreshing = true
+        lifecycleScope.launch {
+            productDao.getAll().collect { product ->
+                adapter.update(product)
+                binding.activityListSwipeRefresh.isRefreshing = false
+            }
+        }
+    }
+
+    private suspend fun searchForUserProducts(userID: String) {
+        productDao.searchAllFromUser(userID).collect { product ->
+            adapter.update(product)
+        }
+    }
+
+    private fun configureLogoutButton(item: MenuItem) {
+        when (item.itemId) {
+            R.id.menu_logout -> {
+                lifecycleScope.launch {
+                    logoutUser()
+                }
+            }
+        }
+    }
+
+    private fun configureFilterButton(item: MenuItem) {
         lifecycleScope.launch {
             val productsOrdered: List<Product>? = when (item.itemId) {
                 R.id.filter_menu_asc_name ->
@@ -82,26 +102,20 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
                 R.id.filter_menu_discount_value ->
                     productDao.searchAllOrderByValueDesc()
                 R.id.filter_menu_without_ordination ->
-                    productDao.getAll()
+                    productDao.getAll().first()
                 else -> null
             }
             productsOrdered?.let {
                 adapter.update(it)
             }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun configureFab() {
         val fab = binding.activityListFab
         fab.setOnClickListener {
-            goToProductForm()
+            invokeActivity(ProductFormActivity::class.java)
         }
-    }
-
-    private fun goToProductForm() {
-        val intent = Intent(this, ProductFormActivity::class.java)
-        startActivity(intent)
     }
 
     private fun configureRecyclerView() {
@@ -109,5 +123,4 @@ class ListProductsActivity : AppCompatActivity(R.layout.activity_list_products) 
         val recyclerView = binding.activityListRecyclerView
         recyclerView.adapter = adapter
     }
-
 }

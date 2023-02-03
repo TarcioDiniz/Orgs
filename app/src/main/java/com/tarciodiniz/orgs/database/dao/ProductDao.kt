@@ -2,11 +2,15 @@ package com.tarciodiniz.orgs.database.dao
 
 import androidx.room.*
 import com.tarciodiniz.orgs.model.Product
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProductDao {
     @Query("SELECT * FROM Product")
-    suspend fun getAll(): List<Product>
+    fun getAll(): Flow<List<Product>>
+
+    @Query("SELECT * FROM Product WHERE userID = :userID")
+    fun searchAllFromUser(userID: String): Flow<List<Product>>
 
     @Insert
     suspend fun save(vararg product: Product)

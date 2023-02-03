@@ -1,6 +1,5 @@
 package com.tarciodiniz.orgs.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -10,6 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.R
 import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityProductViewBinding
+import com.tarciodiniz.orgs.extensions.PRODUCT_KEY
+import com.tarciodiniz.orgs.extensions.invokeActivity
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
 import kotlinx.coroutines.launch
@@ -92,9 +93,8 @@ class ProductView : AppCompatActivity() {
                 finish()
             }
             R.id.edit_product_details_menu -> {
-                Intent(this, ProductFormActivity::class.java).apply {
-                    putExtra("product", product)
-                    startActivity(this)
+                invokeActivity(ProductFormActivity::class.java){
+                    putExtra(PRODUCT_KEY, product)
                 }
             }
         }

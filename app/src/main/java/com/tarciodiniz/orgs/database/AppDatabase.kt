@@ -7,19 +7,30 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.tarciodiniz.orgs.database.convert.ToConverts
 import com.tarciodiniz.orgs.database.dao.ProductDao
+import com.tarciodiniz.orgs.database.dao.UserDao
 import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.model.User
 
-@Database(entities = [Product::class], version = 1)
+@Database(
+    entities = [Product::class, User::class], version = 3)
 @TypeConverters(ToConverts::class)
-abstract class AppDatabase: RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
+
     abstract fun productDao(): ProductDao
+    abstract fun UserDao(): UserDao
 
     companion object {
-        fun getInstance(context: Context): AppDatabase{
-            return Room.databaseBuilder(
-                context, AppDatabase::class.java, "orgs.db"
-            ).build()
+        @Volatile
+        private var db: AppDatabase? = null
+        fun getInstance(context: Context): AppDatabase {
+            return db ?: Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "orgs.db"
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .build().also {
+                db = it
+            }
         }
     }
-
 }
