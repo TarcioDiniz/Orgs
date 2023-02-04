@@ -10,8 +10,7 @@ import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
 import com.tarciodiniz.orgs.extensions.invokeActivity
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
@@ -93,28 +92,33 @@ class ListProductsActivity : ActivityBaseUser() {
 
     private fun configureFilterButton(item: MenuItem) {
         lifecycleScope.launch {
-            val productsOrdered: List<Product>? = when (item.itemId) {
-                R.id.filter_menu_asc_name ->
-                    productDao.searchAllOrderByNameAsc()
-                R.id.filter_menu_name_desc ->
-                    productDao.searchAllOrderByNameDesc()
-                R.id.filter_menu_asc_description ->
-                    productDao.searchAllOrderByDescriptionAsc()
-                R.id.filter_menu_description_desc ->
-                    productDao.searchAllOrderByDescriptionDesc()
-                R.id.filter_menu_asc_value ->
-                    productDao.searchAllOrderByAscValue()
-                R.id.filter_menu_discount_value ->
-                    productDao.searchAllOrderByValueDesc()
-                R.id.filter_menu_without_ordination ->
-                    productDao.getAll().first()
-                else -> null
-            }
-            productsOrdered?.let {
-                adapter.update(it)
+            user.filterNotNull().collect { user ->
+                val userLogin = user.id
+                val productsOrdered: Flow<List<Product>>? = when (item.itemId) {
+                    R.id.filter_menu_asc_name ->
+                        productDao.searchAllOrderByNameAsc(userLogin)
+                    R.id.filter_menu_name_desc ->
+                        productDao.searchAllOrderByNameDesc(userLogin)
+                    R.id.filter_menu_asc_description ->
+                        productDao.searchAllOrderByDescriptionAsc(userLogin)
+                    R.id.filter_menu_description_desc ->
+                        productDao.searchAllOrderByDescriptionDesc(userLogin)
+                    R.id.filter_menu_asc_value ->
+                        productDao.searchAllOrderByAscValue(userLogin)
+                    R.id.filter_menu_discount_value ->
+                        productDao.searchAllOrderByValueDesc(userLogin)
+                    R.id.filter_menu_without_ordination ->
+                        productDao.searchAllFromUser(userLogin)
+                    else -> null
+                }
+                productsOrdered?.let {
+                    adapter.updateFlow(it)
+                }
             }
         }
     }
+
+
 
     private fun configureFab() {
         val fab = binding.activityListFab

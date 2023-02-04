@@ -24,21 +24,21 @@ interface ProductDao {
     @Query("SELECT * FROM Product WHERE id = :id")
     suspend fun getFromID(id: Long): Product?
 
-    @Query("SELECT * FROM Product ORDER BY name ASC")
-    suspend fun searchAllOrderByNameAsc(): List<Product>
+    @Query("SELECT * FROM Product WHERE userID = :id ORDER BY name ASC")
+    fun searchAllOrderByNameAsc(id: String): Flow<List<Product>>
 
-    @Query("SELECT * FROM Product ORDER BY name DESC")
-    suspend fun searchAllOrderByNameDesc(): List<Product>
+    @Query("SELECT * FROM Product WHERE userID = :id ORDER BY name DESC")
+    fun searchAllOrderByNameDesc(id: String): Flow<List<Product>>
 
-    @Query("SELECT * FROM Product ORDER BY description ASC")
-    suspend fun searchAllOrderByDescriptionAsc(): List<Product>
+    @Query("SELECT * FROM Product WHERE userID = :id ORDER BY description ASC")
+    fun searchAllOrderByDescriptionAsc(id: String): Flow<List<Product>>
 
-    @Query("SELECT * FROM Product ORDER BY description DESC")
-    suspend fun searchAllOrderByDescriptionDesc(): List<Product>
+    @Query("SELECT * FROM Product WHERE userID = :id ORDER BY description DESC")
+    fun searchAllOrderByDescriptionDesc(id: String): Flow<List<Product>>
 
-    @Query("SELECT * FROM Product ORDER BY value ASC")
-    suspend fun searchAllOrderByAscValue(): List<Product>
+    @Query("SELECT * FROM Product WHERE userID = :id ORDER BY value ASC")
+    fun searchAllOrderByAscValue(id: String): Flow<List<Product>>
 
-    @Query("SELECT * FROM Product ORDER BY value DESC")
-    suspend fun searchAllOrderByValueDesc(): List<Product>
+    @Query("SELECT * FROM Product WHERE userID = :id ORDER BY value DESC")
+    fun searchAllOrderByValueDesc(id: String): Flow<List<Product>>
 }

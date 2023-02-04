@@ -19,6 +19,10 @@ import com.tarciodiniz.orgs.ui.activity.ProductFormActivity
 import com.tarciodiniz.orgs.ui.activity.ProductView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
@@ -142,5 +146,17 @@ class ListProductAdapter(
         this.dataProduct.addAll(products)
         notifyDataSetChanged()
     }
+
+    private suspend fun Flow<List<Product>>.toProductList() = this.first()
+
+    @SuppressLint("NotifyDataSetChanged")
+    suspend fun updateFlow(products: Flow<List<Product>>) {
+        products.toProductList().let { productsList ->
+            this.dataProduct.clear()
+            this.dataProduct.addAll(productsList)
+            notifyDataSetChanged()
+        }
+    }
+
 
 }
