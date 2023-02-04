@@ -24,7 +24,6 @@ import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
-import com.tarciodiniz.orgs.extensions.invokeActivity
 
 class ListProductAdapter(
     private val context: Context, product: List<Product> = emptyList()
@@ -69,10 +68,11 @@ class ListProductAdapter(
                             true
                         }
                         R.id.menu_delete -> {
+                            val userID = product.userID.toString()
                             scope.launch {
                                 productDao.delete(product)
                                 withContext(Dispatchers.Main) {
-                                    (itemView.context as ListProductsActivity).refreshList()
+                                    (itemView.context as ListProductsActivity).refreshList(userID)
                                 }
                             }
                             true

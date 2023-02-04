@@ -34,16 +34,22 @@ class ListProductsActivity : ActivityBaseUser() {
         setContentView(binding.root)
         configureRecyclerView()
         configureFab()
-        binding.activityListSwipeRefresh.setOnRefreshListener {
-            refreshList()
-        }
         lifecycleScope.launch {
             launch {
                 user
                     .filterNotNull()
-                    .collect {user ->
+                    .collect { user ->
                         searchForUserProducts(user.id)
                     }
+            }
+        }
+
+
+         lifecycleScope.launch{
+            user.filterNotNull().collect{user ->
+                binding.activityListSwipeRefresh.setOnRefreshListener {
+                    refreshList(user.id)
+                }
             }
         }
     }
@@ -60,10 +66,9 @@ class ListProductsActivity : ActivityBaseUser() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun refreshList() {
-        binding.activityListSwipeRefresh.isRefreshing = true
+    fun refreshList(userID: String) {
         lifecycleScope.launch {
-            productDao.getAll().collect { product ->
+            productDao.searchAllFromUser(userID).collect { product ->
                 adapter.update(product)
                 binding.activityListSwipeRefresh.isRefreshing = false
             }
