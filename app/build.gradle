@@ -41,24 +41,53 @@ android {
 }
 
 dependencies {
+    // Android KTX library for providing an easier and more concise way to write Android code.
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+
+// Library for support action bar, material design components and other UI elements.
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+// Material design library for providing a set of material design UI components.
     implementation 'com.google.android.material:material:1.8.0'
+
+// ConstraintLayout library for creating complex layouts with a flat view hierarchy.
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    //outras dependências
+
+// RecyclerView library for displaying a scrolling list of elements.
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+// Image loading library for Android.
     implementation 'io.coil-kt:coil:2.2.2'
+
+// JUnit library for writing and running unit tests.
     testImplementation 'junit:junit:4.13.2'
+
+// JUnit library for writing and running Android tests.
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+
+// Espresso library for writing UI tests for Android.
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+// SwipeRefreshLayout library for adding pull-to-refresh functionality to a view.
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+// Room library for persistence data on Android.
     implementation("androidx.room:room-runtime:2.5.0")
     implementation("androidx.room:room-ktx:2.5.0")
     implementation("androidx.room:room-common:2.5.0")
     implementation("androidx.room:room-paging:2.5.0")
     kapt("androidx.room:room-compiler:2.5.0")
+
+// Kotlin coroutines library for managing concurrency in a more efficient way.
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+// Lifecycle library for managing the lifecycle of Android components.
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+
+// Room library for persistence data on Android.
     implementation 'androidx.room:room-ktx:2.5.0'
+
+// DataStore library for storing key-value data on Android.
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
 }
