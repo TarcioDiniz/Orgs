@@ -90,4 +90,10 @@ dependencies {
 // DataStore library for storing key-value data on Android.
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
+// Retrofit library that facilitates communication with HTTP web services.
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+// Moshi library for JSON parsing and serialization.
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+
 }
