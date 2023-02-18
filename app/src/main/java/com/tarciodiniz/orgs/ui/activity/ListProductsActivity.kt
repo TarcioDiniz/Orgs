@@ -1,7 +1,6 @@
 package com.tarciodiniz.orgs.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.lifecycleScope
@@ -11,12 +10,11 @@ import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
 import com.tarciodiniz.orgs.extensions.invokeActivity
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
-import com.tarciodiniz.orgs.webclient.InitializerRetrofit
-import com.tarciodiniz.orgs.webclient.services.model.json.ProductListResponse
+import com.tarciodiniz.orgs.webclient.product.ProductWebServices
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
-import retrofit2.Call
 
 
 class ListProductsActivity : ActivityBaseUser() {
@@ -31,6 +29,10 @@ class ListProductsActivity : ActivityBaseUser() {
 
     private val productDao by lazy {
         AppDatabase.getInstance(this).productDao()
+    }
+
+    private val productWebServices by lazy {
+        ProductWebServices()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +50,6 @@ class ListProductsActivity : ActivityBaseUser() {
             }
         }
 
-
          lifecycleScope.launch{
             user.filterNotNull().collect{user ->
                 binding.activityListSwipeRefresh.setOnRefreshListener {
@@ -58,23 +59,11 @@ class ListProductsActivity : ActivityBaseUser() {
         }
 
         lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val response = InitializerRetrofit().productServices.getProducts()
-                if (response.isSuccessful) {
-                    response.body()?.let { products ->
-                        Log.i("ProductAPI", "onCreate: $products")
-                    }
-                } else {
-                    Log.e("ProductAPI", "onCreate: failed to get products")
-                }
-            } catch (e: Exception) {
-                Log.e("ProductAPI", "onCreate: failed to get products", e)
-            }
+            productWebServices.getProducts()
         }
 
-
-
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.filter_menu, menu)
@@ -140,8 +129,6 @@ class ListProductsActivity : ActivityBaseUser() {
             }
         }
     }
-
-
 
     private fun configureFab() {
         val fab = binding.activityListFab

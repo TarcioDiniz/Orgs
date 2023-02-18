@@ -1,4 +1,4 @@
-package com.tarciodiniz.orgs.webclient.services.model.json
+package com.tarciodiniz.orgs.webclient.model.json
 
 data class Sort(
     val empty: Boolean,

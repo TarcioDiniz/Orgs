@@ -1,9 +1,9 @@
-package com.tarciodiniz.orgs.webclient.services.model.json
+package com.tarciodiniz.orgs.webclient.model.json
 
-import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.webclient.dto.ProductDto
 
 data class ProductListResponse(
-    val content: List<Product>,
+    val content: List<ProductDto>,
     val pageable: Pageable,
     val totalElements: Int,
     val totalPages: Int,
