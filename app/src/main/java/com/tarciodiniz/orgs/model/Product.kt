@@ -1,17 +1,16 @@
 package com.tarciodiniz.orgs.model
 
-import android.os.Parcelable
+import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
+import java.util.*
 
 @Entity
-@Parcelize
 data class Product(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString(),
     @Json(name = "name")
     val name: String,
     @Json(name = "description")
@@ -22,4 +21,4 @@ data class Product(
     val image: String? = null,
     @Json(name = "userID")
     val userID: String? = null
-) : Parcelable
+)

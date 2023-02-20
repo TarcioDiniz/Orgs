@@ -12,7 +12,7 @@ import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.model.User
 
 @Database(
-    entities = [Product::class, User::class], version = 3)
+    entities = [Product::class, User::class], version = 4)
 @TypeConverters(ToConverts::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -27,7 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
                 context,
                 AppDatabase::class.java,
                 "orgs.db"
-            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                 .build().also {
                 db = it
             }

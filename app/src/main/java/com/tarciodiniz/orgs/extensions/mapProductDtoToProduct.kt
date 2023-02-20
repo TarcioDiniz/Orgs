@@ -5,7 +5,7 @@ import com.tarciodiniz.orgs.webclient.dto.ProductDto
 
 fun mapProductDtoToProduct(dto: ProductDto): Product {
     return Product(
-        id = dto.id,
+        id = dto.id.toString(),
         name = dto.name,
         description = dto.description,
         value = dto.valueProduct,

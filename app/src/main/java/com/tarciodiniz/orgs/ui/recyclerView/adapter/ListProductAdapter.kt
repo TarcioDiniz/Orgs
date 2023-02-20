@@ -44,7 +44,7 @@ class ListProductAdapter(
             itemView.setOnClickListener {
 
                 val position = bindingAdapterPosition
-                val product = dataProduct.toMutableList()[position]
+                val product = dataProduct.toMutableList()[position].id
 
                 val intent = Intent(itemView.context, ProductView::class.java)
                 intent.putExtra(PRODUCT_KEY, product)
@@ -64,7 +64,7 @@ class ListProductAdapter(
                     when (item.itemId) {
                         R.id.menu_edit -> {
                             Intent(itemView.context, ProductFormActivity::class.java).apply {
-                                putExtra(PRODUCT_KEY, product)
+                                putExtra(PRODUCT_KEY, product.id)
                                 itemView.context.startActivity(this)
                             }
                             true
@@ -132,8 +132,8 @@ class ListProductAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val produto = dataProduct[position]
-        holder.bind(produto)
+        val product = dataProduct[position]
+        holder.bind(product)
     }
 
     override fun getItemCount(): Int = dataProduct.size

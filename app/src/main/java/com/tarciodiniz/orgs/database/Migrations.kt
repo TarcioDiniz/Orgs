@@ -22,3 +22,44 @@ val MIGRATION_2_3 = object : Migration(2, 3){
         database.execSQL("ALTER TABLE Product ADD COLUMN 'userID' TEXT")
     }
 }
+
+
+// Steps to change a Long type to String
+
+// 1 - Create a table with all the data
+// 2 - Copy data from the current table to the table
+// 3 - Generate different and new id for the new table
+// 4 - Remove the current table
+// 5 - Rename the new table to the name of the current one
+
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // 1 - Create a new table with all the data and the new id column
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `Product_new` 
+            (`id` TEXT NOT NULL, 
+            `name` TEXT NOT NULL, 
+            `description` TEXT NOT NULL, 
+            `value` REAL NOT NULL, 
+            `image` TEXT, 
+            `userID` TEXT, 
+            PRIMARY KEY(`id`))"""
+        )
+
+        // 2 - Copy data from the current table to the new table with new id
+        database.execSQL(
+            """
+            INSERT INTO `Product_new` (`id`, `name`, `description`, `value`, `image`, `userID`) 
+            SELECT CAST(uuid() AS TEXT), `name`, `description`, `value`, `image`, `userID` FROM `Product`
+            """
+        )
+
+        // 3 - Remove the current table
+        database.execSQL("DROP TABLE `Product`")
+
+        // 4 - Rename the new table to the name of the current one
+        database.execSQL("ALTER TABLE `Product_new` RENAME TO `Product`")
+    }
+}
+

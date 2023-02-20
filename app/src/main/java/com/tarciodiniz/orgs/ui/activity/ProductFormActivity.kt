@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityProductFormBinding
+import com.tarciodiniz.orgs.extensions.PRODUCT_KEY
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.ui.dialog.FormImageDialog
@@ -18,7 +19,7 @@ class ProductFormActivity : ActivityBaseUser() {
     }
 
     private var url: String? = null
-    private var idProduct = 0L
+    private var idProduct: String? = null
 
     private val productDao by lazy {
         AppDatabase.getInstance(this).productDao()
@@ -39,17 +40,17 @@ class ProductFormActivity : ActivityBaseUser() {
         lifecycleScope.launch {
             user
                 .filterNotNull()
-                .collect{
+                .collect {
 
-            }
+                }
         }
     }
 
     private fun tryToLookForProduct() {
-        intent.getParcelableExtra<Product>("product")?.let { productLoad ->
+        intent.getStringExtra(PRODUCT_KEY)?.let { id ->
             lifecycleScope.launch {
-                productDao.getFromID(productLoad.id)?.let {
-                    idProduct = productLoad.id
+                productDao.getFromID(id)?.let {
+                    idProduct = id
                     title = "Change Product"
                     fillFields(it)
                 }
@@ -75,8 +76,9 @@ class ProductFormActivity : ActivityBaseUser() {
             lifecycleScope.launch {
                 user.value?.let { user ->
                     val newProduct = createProduct(user.id)
-                    if (idProduct > 0L) {
+                    if (idProduct != null) {
                         productDao.update(newProduct)
+
                     } else {
                         productDao.save(newProduct)
                     }
@@ -101,14 +103,25 @@ class ProductFormActivity : ActivityBaseUser() {
             BigDecimal(valueText)
         }
 
-        return Product(
-            id = idProduct,
-            name = name,
-            description = description,
-            value = value,
-            image = url,
-            userID = userID
+        if (idProduct == null) {
+            return Product(
+                name = name,
+                description = description,
+                value = value,
+                image = url,
+                userID = userID
 
-        )
+            )
+        } else {
+            return Product(
+                id = idProduct!!,
+                name = name,
+                description = description,
+                value = value,
+                image = url,
+                userID = userID
+
+            )
+        }
     }
 }

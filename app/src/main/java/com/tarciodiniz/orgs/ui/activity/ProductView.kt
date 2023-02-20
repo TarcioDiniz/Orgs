@@ -19,7 +19,7 @@ import java.text.NumberFormat
 import java.util.*
 
 class ProductView : AppCompatActivity() {
-    private var productId: Long? = null
+    private var productId: String? = null
     private var product: Product? = null
     private val binding by lazy {
         ActivityProductViewBinding.inflate(layoutInflater)
@@ -51,8 +51,8 @@ class ProductView : AppCompatActivity() {
     }
 
     private fun tryToLoadProduct() {
-        intent.getParcelableExtra<Product>("product")?.let { productLoad ->
-            productId = productLoad.id
+        intent.getStringExtra("product")?.let { id ->
+            productId = id
         }
 
 
@@ -94,7 +94,7 @@ class ProductView : AppCompatActivity() {
             }
             R.id.edit_product_details_menu -> {
                 invokeActivity(ProductFormActivity::class.java){
-                    putExtra(PRODUCT_KEY, product)
+                    putExtra(PRODUCT_KEY, product?.id)
                 }
             }
         }

@@ -12,7 +12,7 @@ interface ProductDao {
     @Query("SELECT * FROM Product WHERE userID = :userID")
     fun searchAllFromUser(userID: String): Flow<List<Product>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(vararg product: Product)
 
     @Delete
@@ -22,7 +22,7 @@ interface ProductDao {
     suspend fun update(product: Product)
 
     @Query("SELECT * FROM Product WHERE id = :id")
-    suspend fun getFromID(id: Long): Product?
+    suspend fun getFromID(id: String): Product?
 
     @Query("SELECT * FROM Product WHERE userID = :id ORDER BY name ASC")
     fun searchAllOrderByNameAsc(id: String): Flow<List<Product>>

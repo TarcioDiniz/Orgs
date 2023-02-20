@@ -9,6 +9,7 @@ import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityListProductsBinding
 import com.tarciodiniz.orgs.extensions.invokeActivity
 import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.repository.ProductRepository
 import com.tarciodiniz.orgs.ui.recyclerView.adapter.ListProductAdapter
 import com.tarciodiniz.orgs.webclient.product.ProductWebServices
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +34,12 @@ class ListProductsActivity : ActivityBaseUser() {
 
     private val productWebServices by lazy {
         ProductWebServices()
+    }
+
+    private val productRepository by lazy {
+        ProductRepository(
+            AppDatabase.getInstance(this).productDao(),
+            ProductWebServices())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +94,7 @@ class ListProductsActivity : ActivityBaseUser() {
     }
 
     private suspend fun searchForUserProducts(userID: String) {
-        productDao.searchAllFromUser(userID).collect { product ->
+        productRepository.searchAllFromUser(userID).collect { product ->
             adapter.update(product)
         }
     }
