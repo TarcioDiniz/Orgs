@@ -34,17 +34,14 @@ class ProductWebServices {
         return emptyList()
     }
 
-    suspend fun save(product: ProductDto) {
+    suspend fun save(product: ProductDto): Boolean {
         try {
             val response = productServices.save(product.id, product)
-            if (response.isSuccessful) {
-                Log.i(TAG, SUCCESS_MESSAGE)
-            } else {
-                Log.e(TAG, FAILED_MESSAGE)
-            }
+            return response.isSuccessful
         } catch (e: Exception) {
             Log.e(TAG, FAILED_MESSAGE, e)
         }
+        return false
     }
 
 }

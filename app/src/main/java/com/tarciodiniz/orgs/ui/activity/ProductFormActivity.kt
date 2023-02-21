@@ -93,12 +93,12 @@ class ProductFormActivity : ActivityBaseUser() {
                     )
                     if (idProduct != null) {
                         newProduct.apply {
-                            repository.update(newProductDto)
+                            repository.update(newProduct)
                         }
 
                     } else {
                         newProduct.apply {
-                            repository.save(newProductDto)
+                            repository.save(newProduct)
                         }
                     }
                     finish()
@@ -139,7 +139,6 @@ class ProductFormActivity : ActivityBaseUser() {
                 value = value,
                 image = url,
                 userID = userID
-
             )
         }
     }

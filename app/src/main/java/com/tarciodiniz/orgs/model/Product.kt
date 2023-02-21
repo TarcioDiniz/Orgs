@@ -1,6 +1,7 @@
 package com.tarciodiniz.orgs.model
 
 import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
@@ -20,5 +21,7 @@ data class Product(
     @Json(name = "image")
     val image: String? = null,
     @Json(name = "userID")
-    val userID: String? = null
+    val userID: String? = null,
+    @ColumnInfo(defaultValue = "0")
+    val syncNow: Boolean = false
 )

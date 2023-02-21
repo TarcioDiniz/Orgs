@@ -1,11 +1,14 @@
 package com.tarciodiniz.orgs.repository
 
 import android.util.Log
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.database.dao.ProductDao
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.webclient.dto.ProductDto
 import com.tarciodiniz.orgs.webclient.product.ProductWebServices
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 
 class ProductRepository(
@@ -17,29 +20,25 @@ class ProductRepository(
         return dao.getAll()
     }
 
-    suspend fun updateAll() {
+    private suspend fun updateAll() {
         productWebServices.getProducts().let { productResponse ->
             productResponse.map { product ->
-                dao.save(product)
+                val productSync = product.copy(syncNow = true)
+                dao.save(productSync)
             }
         }
     }
 
     suspend fun searchAllFromUser(userID: String): Flow<List<Product>> {
         productWebServices.getProducts().let { productResponse ->
+            syncNow()
             productResponse.map { product ->
                 if (product.userID == userID) {
                     Log.i("webapi", product.toString())
-                    dao.save(
-                        Product(
-                            id = product.id,
-                            name = product.name,
-                            description = product.description,
-                            value = product.value,
-                            image = product.image,
-                            userID = product.userID
-                        )
-                    )
+                    product.let {
+                        val productSync = it.copy(syncNow = true)
+                        dao.save(productSync)
+                    }
                 }
             }
         }
@@ -50,36 +49,52 @@ class ProductRepository(
         return dao.getFromID(id)
     }
 
-    suspend fun update(product: ProductDto) {
+    suspend fun update(product: Product) {
+        dao.update(product)
         product.apply {
-            dao.update(
-                Product(
-                    id = product.id,
-                    name = product.name,
-                    description = product.description,
-                    value = product.valueProduct,
-                    image = product.image,
-                    userID = product.userID
+            if (productWebServices.save(
+                    ProductDto(
+                        id = product.id,
+                        name = product.name,
+                        description = product.description,
+                        valueProduct = product.value,
+                        image = product.image,
+                        userID = product.userID
+                    )
                 )
-            )
+            ) {
+                val productSync = product.copy(syncNow = true)
+                dao.update(productSync)
+            }
         }
-        productWebServices.save(product)
     }
 
-    suspend fun save(product: ProductDto) {
+    suspend fun save(product: Product) {
+        dao.save(product)
         product.apply {
-            dao.save(
-                Product(
-                    id = product.id,
-                    name = product.name,
-                    description = product.description,
-                    value = product.valueProduct,
-                    image = product.image,
-                    userID = product.userID
+            if (productWebServices.save(
+                    ProductDto(
+                        id = product.id,
+                        name = product.name,
+                        description = product.description,
+                        valueProduct = product.value,
+                        image = product.image,
+                        userID = product.userID
+                    )
                 )
-            )
+            ) {
+                val productSync = product.copy(syncNow = true)
+                dao.update(productSync)
+            }
         }
-        productWebServices.save(product)
+    }
+
+    private suspend fun syncNow(){
+        val productsNotSync = dao.getAllNotSync().first()
+        productsNotSync.forEach { productNotSync ->
+            save(productNotSync)
+        }
+        updateAll()
     }
 
 }

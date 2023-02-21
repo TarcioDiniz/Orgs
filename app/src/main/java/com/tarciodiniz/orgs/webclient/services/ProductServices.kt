@@ -17,7 +17,7 @@ interface ProductServices {
     suspend fun save(
         @Path("id") id: String,
         @Body product: ProductDto
-    ): Response<ProductsResponse>
+    ): Response<Unit>
 
 
 }

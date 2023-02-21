@@ -42,4 +42,7 @@ interface ProductDao {
 
     @Query("SELECT * FROM Product WHERE userID = :id ORDER BY value DESC")
     fun searchAllOrderByValueDesc(id: String): Flow<List<Product>>
+
+    @Query("SELECT * FROM Product WHERE syncNow = 0")
+    fun getAllNotSync(): Flow<List<Product>>
 }
