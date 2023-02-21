@@ -97,4 +97,10 @@ class ProductRepository(
         updateAll()
     }
 
+    suspend fun delete(product: Product) {
+        if (productWebServices.delete(product)) {
+            dao.delete(product)
+        }
+    }
+
 }

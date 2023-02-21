@@ -14,9 +14,11 @@ import com.tarciodiniz.orgs.databinding.ProductBinding
 import com.tarciodiniz.orgs.extensions.PRODUCT_KEY
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.repository.ProductRepository
 import com.tarciodiniz.orgs.ui.activity.ListProductsActivity
 import com.tarciodiniz.orgs.ui.activity.ProductFormActivity
 import com.tarciodiniz.orgs.ui.activity.ProductView
+import com.tarciodiniz.orgs.webclient.product.ProductWebServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -60,6 +62,9 @@ class ListProductAdapter(
 
                 val db = AppDatabase.getInstance(itemView.context)
                 val productDao = db.productDao()
+                val repository by lazy {
+                    ProductRepository(productDao, ProductWebServices())
+                }
                 popupMenu.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.menu_edit -> {
@@ -72,7 +77,7 @@ class ListProductAdapter(
                         R.id.menu_delete -> {
                             val userID = product.userID.toString()
                             scope.launch {
-                                productDao.delete(product)
+                                repository.delete(product)
                                 withContext(Dispatchers.Main) {
                                     (itemView.context as ListProductsActivity).refreshList(userID)
                                 }

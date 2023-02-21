@@ -13,6 +13,8 @@ import com.tarciodiniz.orgs.extensions.PRODUCT_KEY
 import com.tarciodiniz.orgs.extensions.invokeActivity
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.repository.ProductRepository
+import com.tarciodiniz.orgs.webclient.product.ProductWebServices
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -26,6 +28,10 @@ class ProductView : AppCompatActivity() {
     }
     private val productDao by lazy {
         AppDatabase.getInstance(this).productDao()
+    }
+
+    private val repository by lazy {
+        ProductRepository(productDao, ProductWebServices())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,12 +94,12 @@ class ProductView : AppCompatActivity() {
         when (item.itemId) {
             R.id.remove_product_details_menu -> {
                 lifecycleScope.launch {
-                    product?.let { productDao.delete(it) }
+                    product?.let { repository.delete(it) }
                 }
                 finish()
             }
             R.id.edit_product_details_menu -> {
-                invokeActivity(ProductFormActivity::class.java){
+                invokeActivity(ProductFormActivity::class.java) {
                     putExtra(PRODUCT_KEY, product?.id)
                 }
             }

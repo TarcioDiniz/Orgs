@@ -9,6 +9,7 @@ import com.tarciodiniz.orgs.webclient.dto.ProductDto
 private const val TAG = "ProductAPI"
 private const val SUCCESS_MESSAGE = "onCreate: Success"
 private const val FAILED_MESSAGE = "onCreate: failed to get products"
+private const val FAILED_MESSAGE_DELETE = "onCreate: failed to delete product"
 
 class ProductWebServices {
 
@@ -40,6 +41,16 @@ class ProductWebServices {
             return response.isSuccessful
         } catch (e: Exception) {
             Log.e(TAG, FAILED_MESSAGE, e)
+        }
+        return false
+    }
+
+    suspend fun delete(product: Product): Boolean {
+        try {
+            val response = productServices.delete(product.id)
+            return response.isSuccessful
+        } catch (e: Exception) {
+            Log.e(TAG, FAILED_MESSAGE_DELETE, e)
         }
         return false
     }
