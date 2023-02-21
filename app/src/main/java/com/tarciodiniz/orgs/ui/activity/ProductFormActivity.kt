@@ -7,7 +7,10 @@ import com.tarciodiniz.orgs.databinding.ActivityProductFormBinding
 import com.tarciodiniz.orgs.extensions.PRODUCT_KEY
 import com.tarciodiniz.orgs.extensions.tryToLoad
 import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.repository.ProductRepository
 import com.tarciodiniz.orgs.ui.dialog.FormImageDialog
+import com.tarciodiniz.orgs.webclient.dto.ProductDto
+import com.tarciodiniz.orgs.webclient.product.ProductWebServices
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -23,6 +26,10 @@ class ProductFormActivity : ActivityBaseUser() {
 
     private val productDao by lazy {
         AppDatabase.getInstance(this).productDao()
+    }
+
+    private val repository by lazy {
+        ProductRepository(productDao, ProductWebServices())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +56,7 @@ class ProductFormActivity : ActivityBaseUser() {
     private fun tryToLookForProduct() {
         intent.getStringExtra(PRODUCT_KEY)?.let { id ->
             lifecycleScope.launch {
-                productDao.getFromID(id)?.let {
+                repository.getFromID(id)?.let {
                     idProduct = id
                     title = "Change Product"
                     fillFields(it)
@@ -76,11 +83,23 @@ class ProductFormActivity : ActivityBaseUser() {
             lifecycleScope.launch {
                 user.value?.let { user ->
                     val newProduct = createProduct(user.id)
+                    val newProductDto = ProductDto(
+                        id = newProduct.id,
+                        name = newProduct.name,
+                        description = newProduct.description,
+                        valueProduct = newProduct.value,
+                        image = newProduct.image,
+                        userID = newProduct.userID
+                    )
                     if (idProduct != null) {
-                        productDao.update(newProduct)
+                        newProduct.apply {
+                            repository.update(newProductDto)
+                        }
 
                     } else {
-                        productDao.save(newProduct)
+                        newProduct.apply {
+                            repository.save(newProductDto)
+                        }
                     }
                     finish()
                 }

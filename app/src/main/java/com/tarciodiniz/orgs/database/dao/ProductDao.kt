@@ -2,6 +2,7 @@ package com.tarciodiniz.orgs.database.dao
 
 import androidx.room.*
 import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.webclient.dto.ProductDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao

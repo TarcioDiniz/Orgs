@@ -3,6 +3,7 @@ package com.tarciodiniz.orgs.repository
 import android.util.Log
 import com.tarciodiniz.orgs.database.dao.ProductDao
 import com.tarciodiniz.orgs.model.Product
+import com.tarciodiniz.orgs.webclient.dto.ProductDto
 import com.tarciodiniz.orgs.webclient.product.ProductWebServices
 import kotlinx.coroutines.flow.Flow
 
@@ -43,6 +44,42 @@ class ProductRepository(
             }
         }
         return dao.searchAllFromUser(userID)
+    }
+
+    suspend fun getFromID(id: String): Product? {
+        return dao.getFromID(id)
+    }
+
+    suspend fun update(product: ProductDto) {
+        product.apply {
+            dao.update(
+                Product(
+                    id = product.id,
+                    name = product.name,
+                    description = product.description,
+                    value = product.valueProduct,
+                    image = product.image,
+                    userID = product.userID
+                )
+            )
+        }
+        productWebServices.save(product)
+    }
+
+    suspend fun save(product: ProductDto) {
+        product.apply {
+            dao.save(
+                Product(
+                    id = product.id,
+                    name = product.name,
+                    description = product.description,
+                    value = product.valueProduct,
+                    image = product.image,
+                    userID = product.userID
+                )
+            )
+        }
+        productWebServices.save(product)
     }
 
 }
