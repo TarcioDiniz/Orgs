@@ -86,7 +86,7 @@ class ListProductsActivity : ActivityBaseUser() {
 
     fun refreshList(userID: String) {
         lifecycleScope.launch {
-            productDao.searchAllFromUser(userID).collect { product ->
+            productRepository.searchAllFromUser(userID).collect { product ->
                 adapter.update(product)
                 binding.activityListSwipeRefresh.isRefreshing = false
             }

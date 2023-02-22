@@ -47,8 +47,8 @@ class ProductWebServices {
 
     suspend fun delete(product: Product): Boolean {
         try {
-            val response = productServices.delete(product.id)
-            return response.isSuccessful
+            productServices.delete(product.id)
+            return true
         } catch (e: Exception) {
             Log.e(TAG, FAILED_MESSAGE_DELETE, e)
         }
