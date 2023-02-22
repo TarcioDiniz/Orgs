@@ -23,5 +23,7 @@ data class Product(
     @Json(name = "userID")
     val userID: String? = null,
     @ColumnInfo(defaultValue = "0")
-    val syncNow: Boolean = false
+    val syncNow: Boolean = false,
+    @ColumnInfo(defaultValue = "0")
+    val deleteSyncNow: Boolean = false
 )

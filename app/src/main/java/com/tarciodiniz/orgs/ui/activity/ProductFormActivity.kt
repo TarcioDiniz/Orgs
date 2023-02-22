@@ -1,6 +1,7 @@
 package com.tarciodiniz.orgs.ui.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityProductFormBinding
@@ -11,7 +12,6 @@ import com.tarciodiniz.orgs.repository.ProductRepository
 import com.tarciodiniz.orgs.ui.dialog.FormImageDialog
 import com.tarciodiniz.orgs.webclient.dto.ProductDto
 import com.tarciodiniz.orgs.webclient.product.ProductWebServices
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -44,19 +44,12 @@ class ProductFormActivity : ActivityBaseUser() {
             }
         }
         tryToLookForProduct()
-        lifecycleScope.launch {
-            user
-                .filterNotNull()
-                .collect {
-
-                }
-        }
     }
 
     private fun tryToLookForProduct() {
         intent.getStringExtra(PRODUCT_KEY)?.let { id ->
             lifecycleScope.launch {
-                repository.getFromID(id)?.let {
+                productDao.getFromID(id)?.let {
                     idProduct = id
                     title = "Change Product"
                     fillFields(it)
@@ -66,6 +59,7 @@ class ProductFormActivity : ActivityBaseUser() {
     }
 
     private fun fillFields(productLoad: Product) {
+        Log.i("tetent", "sss")
         url = productLoad.image
         binding.activityImagem
             .tryToLoad(productLoad.image)

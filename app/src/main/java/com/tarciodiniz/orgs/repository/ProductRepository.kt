@@ -1,8 +1,6 @@
 package com.tarciodiniz.orgs.repository
 
 import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import com.tarciodiniz.orgs.database.dao.ProductDao
 import com.tarciodiniz.orgs.model.Product
 import com.tarciodiniz.orgs.webclient.dto.ProductDto
@@ -30,17 +28,22 @@ class ProductRepository(
     }
 
     suspend fun searchAllFromUser(userID: String): Flow<List<Product>> {
-        productWebServices.getProducts().let { productResponse ->
-            syncNow()
-            productResponse.map { product ->
-                if (product.userID == userID) {
-                    Log.i("webapi", product.toString())
-                    product.let {
-                        val productSync = it.copy(syncNow = true)
-                        dao.save(productSync)
+
+        try {
+            productWebServices.getProducts().let { productResponse ->
+                syncNow()
+                productResponse.map { product ->
+                    if (product.userID == userID) {
+                        Log.i("webapi", product.toString())
+                        product.let {
+                            val productSync = it.copy(syncNow = true)
+                            dao.save(productSync)
+                        }
                     }
                 }
             }
+        }catch (e:Exception){
+            Log.e("Failed", "connection to api failed")
         }
         return dao.searchAllFromUser(userID)
     }
@@ -90,6 +93,10 @@ class ProductRepository(
     }
 
     private suspend fun syncNow(){
+        val deactivateProduct = dao.deactivate().first()
+        deactivateProduct.forEach { product ->
+            delete(product)
+        }
         val productsNotSync = dao.getAllNotSync().first()
         productsNotSync.forEach { productNotSync ->
             save(productNotSync)
@@ -100,7 +107,10 @@ class ProductRepository(
     suspend fun delete(product: Product) {
         if (productWebServices.delete(product)) {
             dao.delete(product)
+        }else{
+            dao.deactivateNote(product.id)
         }
+
     }
 
 }
