@@ -3,6 +3,7 @@ package com.tarciodiniz.orgs.webclient
 import com.squareup.moshi.Moshi
 import com.tarciodiniz.orgs.extensions.BigDecimalJsonAdapter
 import com.tarciodiniz.orgs.webclient.services.ProductServices
+import com.tarciodiniz.orgs.webclient.services.UserServices
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
@@ -24,5 +25,7 @@ class InitializerRetrofit {
         .build()
 
     val productServices: ProductServices = retrofit.create(ProductServices::class.java)
+    val userServices: UserServices = retrofit.create(UserServices::class.java)
+
 
 }
