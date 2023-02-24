@@ -10,6 +10,8 @@ import com.tarciodiniz.orgs.database.AppDatabase
 import com.tarciodiniz.orgs.databinding.ActivityUserRegistrationFormBinding
 import com.tarciodiniz.orgs.extensions.toHash
 import com.tarciodiniz.orgs.model.User
+import com.tarciodiniz.orgs.webclient.dto.SetUserDto
+import com.tarciodiniz.orgs.webclient.user.UserWebServices
 import kotlinx.coroutines.launch
 
 class ActivityUserRegistrationForm : AppCompatActivity(R.layout.activity_user_registration_form) {
@@ -20,6 +22,10 @@ class ActivityUserRegistrationForm : AppCompatActivity(R.layout.activity_user_re
 
     private val dao by lazy {
         AppDatabase.getInstance(this).UserDao()
+    }
+
+    private val userWebServices by lazy {
+        UserWebServices()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +47,7 @@ class ActivityUserRegistrationForm : AppCompatActivity(R.layout.activity_user_re
         lifecycleScope.launch {
             try {
                 dao.save(user)
+                userWebServices.setUsers(SetUserDto(user.id, user.name, user.password))
                 finish()
             } catch (e: Exception) {
                 Log.e("user_registration_form", "Register Button", e)
